@@ -1,19 +1,37 @@
-import {LISTEN} from "./musicType";
-import {LIKE} from "./musicType";
-import playlist from "../../db";
+
+import list from "../../db";
 
 const initialState = {
-    music: playlist
+    music: list.playlist
 };
 
 const musicReducer = (state = initialState, action) => {
     const id = action.id;
+    let musics = null;
     switch (action.type) {
-        case LISTEN:
-            state.music[id].listened = !state.music[id].listened;
-            return state;
-        case LIKE:
-            state.music[id].favourite = !state.music[id].favourite;
+        case "LISTEN":
+            musics = state.music.map((music) => {
+                if (music.id === id) {
+                    music.listened ^= 1
+                }
+                return music
+            });
+            return {
+                ...state,
+                music: musics
+            };
+        case "LIKE":
+            musics = state.music.map((music) => {
+                if (music.id === id) {
+                    music.favourite ^= 1
+                }
+                return music
+            });
+            return {
+                ...state,
+                music: musics
+            }
+        default:
             return state;
     }
 };

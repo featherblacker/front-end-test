@@ -1,8 +1,7 @@
 import React, {Component} from "react";
 import "./Favourite.css"
-import playlist from "../db";
-import {useSelector} from "react-redux";
-import Music from "./Music";
+import {connect} from "react-redux";
+import {likeAction, listenAction} from "../Redux/music/musicAction";
 
 class Favourite extends Component {
     constructor(props) {
@@ -18,11 +17,24 @@ class Favourite extends Component {
                     </div>
                     <div>
                         {
-                            playlist.playlist.map((song, index) =>{
-                                return(
-                                    song.favourite &&
+                            this.props.music.filter(song => song.favourite).map((song, index) => {
+                                return (
                                     <div key={index}>
-                                        <Music song={song}/>
+                                        <div>
+                                            {song.artist}
+                                        </div>
+                                        <div>
+                                            {song.track}
+                                        </div>
+
+                                        <button onClick={this.props.listenAction.bind(this, song)} type={"button"}
+                                                className={song.listened ? "btn btn-primary" : "btn btn-secondary"}>
+                                            Listen
+                                        </button>
+                                        <button onClick={this.props.likeAction.bind(this, song)} type={"button"}
+                                                className={song.favourite ? "btn btn-primary" : "btn btn-secondary"}>
+                                            Favorite
+                                        </button>
                                     </div>
                                 )
                             })
@@ -34,4 +46,11 @@ class Favourite extends Component {
     }
 }
 
-export default Favourite;
+const mapState = (state) => {
+    return {
+        music: state.music
+    }
+};
+
+export default connect(mapState, {likeAction, listenAction})(Favourite)
+;

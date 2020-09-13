@@ -1,15 +1,11 @@
 import React, {Component} from "react";
 import "../db";
-import playlist from "../db";
-import Music from "./Music";
+import {connect} from "react-redux";
+import {likeAction, listenAction} from "../Redux/music/musicAction";
 
-class Playlist extends Component{
-    constructor(props) {
-        super(props);
-    }
-
-    render(){
-        return(
+class Playlist extends Component {
+    render() {
+        return (
             <div>
                 <div className={"card"}>
                     <div className={"title"}>
@@ -17,10 +13,24 @@ class Playlist extends Component{
                     </div>
                     <div>
                         {
-                            playlist.playlist.map((song, index) =>{
-                                return(
+                            this.props.music.map((song, index) => {
+                                return (
                                     <div key={index}>
-                                        <Music song={song}/>
+                                        <div>
+                                            {song.artist}
+                                        </div>
+                                        <div>
+                                            {song.track}
+                                        </div>
+
+                                        <button onClick={(e)=>{this.props.listenAction(song)}} type={"button"}
+                                                className={song.listened ? "btn btn-primary" : "btn btn-secondary"}>
+                                            Listen
+                                        </button>
+                                        <button onClick={this.props.likeAction.bind(this, song)} type={"button"}
+                                                className={song.favourite ? "btn btn-primary" : "btn btn-secondary"}>
+                                            Favorite
+                                        </button>
                                     </div>
                                 )
                             })
@@ -29,7 +39,14 @@ class Playlist extends Component{
                 </div>
             </div>
         )
-    }
+    };
 }
 
-export default Playlist;
+const mapState = (state) => {
+    return {
+        music: state.music
+    }
+};
+
+export default connect(mapState, {likeAction, listenAction})(Playlist)
+;

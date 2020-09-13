@@ -1,36 +1,52 @@
 import React, {Component} from "react";
-import "../db"
-import playlist from "../db";
-import Music from "./Music";
+import {connect} from "react-redux";
+import {likeAction, listenAction} from "../Redux/music/musicAction";
 
-class Listen extends Component{
+class Listen extends Component {
     constructor(props) {
         super(props);
     }
 
-    render(){
-        return(
+    render() {
+        return (
             <div>
                 <div className={"card"}>
                     <div className={"title"}>
                         Listen
                     </div>
-                    <div>
-                        {
-                            playlist.playlist.map((song, index) =>{
-
-                                return(
-                                    song.listened && <div key={index}>
-                                        <Music song={song}/>
+                    {
+                        this.props.music.filter(song => song.listened).map((song, index) => {
+                            return (
+                                <div key={index}>
+                                    <div>
+                                        {song.artist}
                                     </div>
-                                )
-                            })
-                        }
-                    </div>
+                                    <div>
+                                        {song.track}
+                                    </div>
+
+                                    <button onClick={this.props.listenAction.bind(this, song)} type={"button"}
+                                            className={song.listened ? "btn btn-primary" : "btn btn-secondary"}>
+                                        Listen
+                                    </button>
+                                    <button onClick={this.props.likeAction.bind(this, song)} type={"button"}
+                                            className={song.favourite ? "btn btn-primary" : "btn btn-secondary"}>
+                                        Favorite
+                                    </button>
+                                </div>
+                            )
+                        })
+                    }
                 </div>
             </div>
         )
     }
 }
 
-export default Listen;
+const mapState = (state) => {
+    return {
+        music: state.music
+    }
+};
+
+export default connect(mapState, {likeAction, listenAction})(Listen);

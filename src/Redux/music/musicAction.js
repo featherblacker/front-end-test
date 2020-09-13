@@ -1,16 +1,15 @@
-import {LIKE} from "./musicType";
-import {LISTEN} from "./musicType";
 
-export const listenAction = (id) => {
+
+export const listenAction = content => {
     return {
-        type: LISTEN,
-        id: id,
+        type: "LISTEN",
+        id: content.id,
     }
 };
 
-export const likeAction = (id) => {
+export const likeAction = content => {
     return {
-        type: LIKE,
-        id: id,
+        type: "LIKE",
+        id: content.id,
     }
 };
